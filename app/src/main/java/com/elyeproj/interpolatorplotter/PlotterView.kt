@@ -9,7 +9,6 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
-import kotlin.math.min
 
 class PlotterView @JvmOverloads constructor(
     context: Context,
@@ -20,13 +19,15 @@ class PlotterView @JvmOverloads constructor(
 
     companion object {
         const val MAX = 300f
-        const val DURATION = 2000f
+        const val DURATION =5000f
     }
 
     private var minHeight = 0f
     private var maxHeight = 1f
-    private val margin: Float = resources.dpToPx(30f)
-    private val initial = Pair(margin, margin)
+    private val marginLeft: Float = resources.dpToPx(40f)
+    private val marginVertical: Float = resources.dpToPx(10f)
+    private val textVerticalAlign: Float = resources.dpToPx(7f)
+    private val initial = Pair(marginLeft, marginVertical)
     private val mutablePath by lazy {
         Path().apply {
             moveTo(getXPos(0f), getYPos(0f))
@@ -59,33 +60,36 @@ class PlotterView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         if (height == 0 || width == 0) return
-        canvas.drawRect(margin, margin, width - margin, height - margin, paint)
+        canvas.drawRect(marginLeft, marginVertical, width - marginLeft, height - marginVertical, paint)
         canvas.drawPath(mutablePath, paint)
         drawText(canvas)
 
     }
 
     private fun drawText(canvas: Canvas) {
-        val xPos = getXPos(-DURATION / 50f)
         if (minHeight <= 0 && maxHeight >= 0) {
-            canvas.drawText("0", xPos, getYPos(-0f), textPaint)
+            drawYAxisText(canvas, 0f)
         }
         if (minHeight < 0) {
-            canvas.drawText("$minHeight", xPos, getYPos(minHeight * MAX), textPaint)
+            drawYAxisText(canvas, minHeight)
             var current = -1f
             while (current > minHeight) {
-                canvas.drawText("$current", xPos, getYPos(current * MAX), textPaint)
-                current--
+                drawYAxisText(canvas, current--)
             }
         }
         if (maxHeight > 0 ) {
-            canvas.drawText("$maxHeight", xPos, getYPos(maxHeight * MAX), textPaint)
+            drawYAxisText(canvas, maxHeight)
             var current = 1f
             while (current < maxHeight) {
-                canvas.drawText("$current", xPos, getYPos(current * MAX), textPaint)
-                current++
+                drawYAxisText(canvas, current++)
             }
         }
+    }
+
+    private fun drawYAxisText(canvas: Canvas, yPos: Float) {
+        canvas.drawText("$yPos",
+            getXPos(-DURATION / 50f),
+            getYPos(yPos * MAX) + textVerticalAlign, textPaint)
     }
 
     fun drawPath(first: Float, second: Float): Float? {
