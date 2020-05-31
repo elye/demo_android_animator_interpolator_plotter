@@ -115,6 +115,8 @@ class PlotterView @JvmOverloads constructor(
     }
 
     fun setHeightRange(min: Float, max: Float) {
+        mutablePath.reset()
+        mutablePath.moveTo(getXPos(0f), getYPos(0f))
         minHeight = min
         maxHeight = max
     }
