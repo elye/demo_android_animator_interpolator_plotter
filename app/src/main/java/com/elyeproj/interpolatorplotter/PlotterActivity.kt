@@ -1,5 +1,7 @@
 package com.elyeproj.interpolatorplotter
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.graphics.Path
 import android.os.Bundle
@@ -10,6 +12,7 @@ import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.elyeproj.interpolatorplotter.PlotterView.Companion.DURATION
 import com.elyeproj.interpolatorplotter.PlotterView.Companion.MAX
 import kotlinx.android.synthetic.main.activity_plotter.*
+
 
 class PlotterActivity : AppCompatActivity() {
 
@@ -42,7 +45,7 @@ class PlotterActivity : AppCompatActivity() {
 
         view_plotter.setHeightRange(range.first, range.second)
         ValueAnimator.ofFloat(0f, MAX).apply {
-            interpolator =  selectedInterpolator
+            interpolator = selectedInterpolator
             duration = DURATION.toLong()
             addUpdateListener { animation ->
                 val progress = animation.animatedValue as Float
@@ -51,6 +54,14 @@ class PlotterActivity : AppCompatActivity() {
                     button_fly.y = it - buttonHeight
                 }
             }
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationStart(animation: Animator?) {
+                    btn_plotter.isEnabled = false
+                }
+                override fun onAnimationEnd(animation: Animator) {
+                    btn_plotter.isEnabled = true
+                }
+            })
         }.start()
     }
 
