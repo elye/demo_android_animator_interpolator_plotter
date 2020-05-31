@@ -9,6 +9,7 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import kotlin.math.min
 
 class PlotterView @JvmOverloads constructor(
     context: Context,
@@ -25,7 +26,6 @@ class PlotterView @JvmOverloads constructor(
     private var minHeight = 0f
     private var maxHeight = 1f
     private val margin: Float = resources.dpToPx(30f)
-    private val stroke: Float = resources.dpToPx(2f)
     private val initial = Pair(margin, margin)
     private val mutablePath by lazy {
         Path().apply {
@@ -44,8 +44,16 @@ class PlotterView @JvmOverloads constructor(
 
     private val paint = Paint().apply {
         color = Color.BLACK
-        strokeWidth = stroke
+        strokeWidth = resources.dpToPx(2f)
         style = Paint.Style.STROKE
+    }
+
+    private val textPaint = Paint().apply {
+        color = Color.BLACK
+        strokeWidth = resources.dpToPx(2f)
+        style = Paint.Style.FILL
+        textSize = resources.dpToPx(14f)
+        textAlign = Paint.Align.RIGHT
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -53,6 +61,31 @@ class PlotterView @JvmOverloads constructor(
         if (height == 0 || width == 0) return
         canvas.drawRect(margin, margin, width - margin, height - margin, paint)
         canvas.drawPath(mutablePath, paint)
+        drawText(canvas)
+
+    }
+
+    private fun drawText(canvas: Canvas) {
+        val xPos = getXPos(-DURATION / 50f)
+        if (minHeight <= 0 && maxHeight >= 0) {
+            canvas.drawText("0", xPos, getYPos(-0f), textPaint)
+        }
+        if (minHeight < 0) {
+            canvas.drawText("$minHeight", xPos, getYPos(minHeight * MAX), textPaint)
+            var current = -1f
+            while (current > minHeight) {
+                canvas.drawText("$current", xPos, getYPos(current * MAX), textPaint)
+                current--
+            }
+        }
+        if (maxHeight > 0 ) {
+            canvas.drawText("$maxHeight", xPos, getYPos(maxHeight * MAX), textPaint)
+            var current = 1f
+            while (current < maxHeight) {
+                canvas.drawText("$current", xPos, getYPos(current * MAX), textPaint)
+                current++
+            }
+        }
     }
 
     fun drawPath(first: Float, second: Float): Float? {

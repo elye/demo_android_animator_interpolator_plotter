@@ -18,9 +18,9 @@ class PlotterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_plotter)
 
         val valueAnimator = TimeAnimator.ofFloat(0f, MAX)
-        valueAnimator.interpolator = AccelerateDecelerateInterpolator()
+        valueAnimator.interpolator = CycleInterpolator(2f)
         valueAnimator.duration = DURATION.toLong()
-        view_plotter.setHeightRange(0f, 1f)
+        view_plotter.setHeightRange(-1f, 1f)
         valueAnimator.addUpdateListener { animation ->
             val progress = animation.animatedValue as Float
             val y =view_plotter.drawPath(animation.currentPlayTime.toFloat(), progress)
