@@ -1,0 +1,2 @@
+rootProject.name='Interpolator Plotter'
+include ':app'
