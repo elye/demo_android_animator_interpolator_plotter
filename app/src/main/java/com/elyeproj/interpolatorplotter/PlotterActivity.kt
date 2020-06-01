@@ -93,6 +93,7 @@ class PlotterActivity : AppCompatActivity() {
             }
             "HesitateInterpolator" -> Pair(HesitateInterpolator(), Pair(0f, 1f))
             "SpringInterpolator" -> Pair(SpringInterpolator(), Pair(0f, 1.4f))
+            "CircularSpringInterpolator" -> Pair(CircularSpringInterpolator(), Pair(-1f, 1f))
             else -> Pair(LinearInterpolator(), Pair(0f, 1f))
         }
     }

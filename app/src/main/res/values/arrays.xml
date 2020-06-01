@@ -14,5 +14,6 @@
         <item>PathInterpolator</item>
         <item>HesitateInterpolator</item>
         <item>SpringInterpolator</item>
+        <item>CircularSpringInterpolator</item>
     </string-array>
 </resources>
